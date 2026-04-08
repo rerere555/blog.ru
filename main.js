@@ -11,7 +11,7 @@ async function getPosts() {
                     <h5 class="card-title">${post.title}</h5>
                     <p class="card-text">${post.body}</p>
                     <a href="#" class="card-link">Подробнее</a>
-                    <a href="#" class="card-link" onclick="removePost(${post.id})">удалить</a>
+                    <a href="" class="card-link" onclick="removePost(${post.id})">удалить</a>
                 </div>
             </div>
             `
@@ -34,14 +34,17 @@ async function addPost() {
     if (data.status === true) {
         await getPosts();
     }
-    console.log(data);
+    
 }
 
 async function removePost(id){
-const res = await fetch('http://api.blog.ru/posts/', {
-    method : 'DELETE',
-    body:
+const res = await fetch('http://api.blog.ru/posts/${id}', {
+    method: 'DELETE'
  });
+ const data = await res.json();
+ if (data.status === true) {
+    await getPosts();
+ }
 }
 getPosts();
 // blog.ru -клиент  front end
