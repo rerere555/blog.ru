@@ -1,3 +1,4 @@
+let id = null;
 
 async function getPosts() {
     let res = await fetch('http://api.blog.ru/posts');
@@ -11,7 +12,8 @@ async function getPosts() {
                     <h5 class="card-title">${post.title}</h5>
                     <p class="card-text">${post.body}</p>
                     <a href="#" class="card-link">Подробнее</a>
-                    <a href="" class="card-link" onclick="removePost(${post.id})">удалить</a>
+                    <button type="submit"  onclick ="removePost(${post.id})">удалить</button>
+                    <button type="submit"  onclick ="selectPost('${post.id}', '${post.title}', '${post.body}')">изменить</button>
                 </div>
             </div>
             `
@@ -38,7 +40,7 @@ async function addPost() {
 }
 
 async function removePost(id){
-const res = await fetch('http://api.blog.ru/posts/${id}', {
+const res = await fetch(`http://api.blog.ru/posts/${id}`, {
     method: 'DELETE'
  });
  const data = await res.json();
@@ -46,6 +48,24 @@ const res = await fetch('http://api.blog.ru/posts/${id}', {
     await getPosts();
  }
 }
+
+async function selectPost(idP, title, body) {
+    id = idP;
+    document.getElementById('title-edit').value = title;
+    document.getElementById('body-edit').value = body;
+}
+async function updatePost(id, title, body) {
+    let formData = new FormData();
+            formData.append('title', title);
+            formData.append('body', body);
+    const res = await fetch(`http://api.blog.ru/posts/${id}`,{
+        method: 'PATCH' ,
+        body: formdata
+    });
+     const data = await res.json();
+ if (data.status === true) {
+    await getPosts();
+}}
 getPosts();
 // blog.ru -клиент  front end
 // api.blog.ru сервер back end
